@@ -1,0 +1,79 @@
+﻿@using DTO
+@inject hgrkapp.DTO.universite universite
+@inject hgrkapp.Repository.IServices.IUniversiteServices services
+
+@if (universites != null)
+{
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <h4 class="card-title">Liste des universités</h4>
+                    <button class="btn-primary border-2" @onclick="OnButtonClicked">Ajouter</button>
+                </div>
+               
+                @*<p class="card-description">
+                        Add class <code>.table-striped</code>
+                    </p>*@
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>
+                                    ID
+                                </th>
+                                <th>
+                                    Nom de l'université
+                                </th>
+                                <th>
+                                    Date de réquérance
+                                </th>
+                                <th>
+                                    Adresse
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(var data in universites)
+                            {
+                                    <tr>
+                                        <td class="py-1">
+                                            @data.Id
+                                        </td>
+                                        <td>
+                                            @data.Nom
+                                        </td>
+                                        <td>
+                                            @data.DateRequeranc
+                                        </td>
+                                        <td>
+                                           @data.Adresse
+                                        </td>
+                                    </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@code {
+    private List<universite> universites = new List<universite>();
+    [Parameter]
+    public EventCallback<bool> OnChange { get; set; }
+
+    private async Task OnButtonClicked()
+    {
+     
+        await OnChange.InvokeAsync(false);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        universites = await services.GetUniversite();
+    }
+}

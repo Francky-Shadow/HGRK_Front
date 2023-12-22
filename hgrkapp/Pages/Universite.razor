@@ -1,0 +1,21 @@
+﻿@page "/universite"
+<h3>Universite</h3>
+
+@if (showComponentList)
+{
+    <UniversiteList OnChange="HandleOnChange"></UniversiteList>
+}
+else
+{
+    <UniversiteForm></UniversiteForm>
+}
+
+
+@code {
+    private bool showComponentList = true; // Commence avec UniversiteList
+
+    private void HandleOnChange(bool newState)
+    {
+        showComponentList = newState; // Bascule entre les composants
+    }
+}
