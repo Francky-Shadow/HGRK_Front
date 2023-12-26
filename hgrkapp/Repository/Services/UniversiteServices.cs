@@ -7,6 +7,25 @@ namespace hgrkapp.Repository.Services
 {
     public class UniversiteServices : IUniversiteServices
     {
+        public async Task<universite> CreateUniversite(universite universite)
+        {
+            try
+            {
+               
+                var response = await routes_const.CreateUniversite
+                     .PostJsonAsync(universite)
+                     .ReceiveJson<universite>();
+                return response;
+            }
+            catch (FlurlHttpException ex)
+            {
+                // Handle the exception or log it
+                Console.WriteLine($"Error during POST request: {ex.Message}");
+                throw;
+            }
+          
+        }
+
         public async Task<List<universite>> GetUniversite()
         {
             try

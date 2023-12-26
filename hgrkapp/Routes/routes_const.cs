@@ -9,5 +9,9 @@
 
         public static string GetGroupes= string.Concat(Base, "api/Groupes");
         public static string GetUniversite = string.Concat(Base, "api/Universites");
+        public static string CreateUniversite = string.Concat(Base, "api/Universites");
+
+
+        public static string GetAllStage = string.Concat(Base, "api/Stages");
     }
 }
