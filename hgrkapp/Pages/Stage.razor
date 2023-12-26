@@ -1,0 +1,20 @@
+﻿@page "/stages"
+<h3>Stage</h3>
+@if (showComponentList)
+{
+    <StageList OnChange="HandleOnChange"></StageList>
+}
+else
+{
+    <StageForm OnChange="HandleOnChange"></StageForm>
+}
+
+
+@code {
+    private bool showComponentList = true; // Commence avec UniversiteList
+
+    private void HandleOnChange(bool newState)
+    {
+        showComponentList = newState; // Bascule entre les composants
+    }
+}

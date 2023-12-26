@@ -1,0 +1,48 @@
+﻿@inject hgrkapp.DTO.stage stage
+@inject hgrkapp.Repository.IServices.IStageService ServiceStage
+<div class="col-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Enregistrement stage</h4>
+            <p class="card-description">
+                Formulaire stage
+            </p>
+
+            <div class="form-group">
+                <label for="exampleInputName1">Nom de l'université</label>
+                <input type="text" class="form-control" @bind="stage.IdUniversite" placeholder="Label">
+            </div>
+
+            <div class="form-group">
+                <label for="exampleInputName1">Date de début</label>
+                <input type="text" class="form-control" @bind="stage.DateDebut" placeholder="Code">
+            </div>
+
+            <div class="form-group">
+                <label for="exampleInputEmail3">Date de fin</label>
+                <input type="date" class="form-control" @bind="stage.DateFin">
+            </div>
+
+            <div class="form-group">
+                <label>Etat du stage</label>
+                <input type="text" class="form-control" @bind="stage.EtatStage">
+            </div>
+
+
+            <button type="submit" class="btn btn-primary mr-2" @onclick="OnPostData">Soumettre</button>
+            <button class="btn btn-light">Cancel</button>
+        </div>
+    </div>
+</div>
+@code {
+
+    [Parameter]
+    public EventCallback<bool> OnChange { get; set; }
+
+    private async void OnPostData()
+    {
+
+        var data = await ServiceStage.CreateStage(stage);
+        await OnChange.InvokeAsync(true);
+    }
+}

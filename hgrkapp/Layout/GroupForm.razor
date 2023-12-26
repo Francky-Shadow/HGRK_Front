@@ -1,0 +1,53 @@
+﻿@inject hgrkapp.DTO.groupe group
+@inject hgrkapp.Repository.IServices.IGroupeServices Services
+<div class="col-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Enregistrement d'un groupe</h4>
+            <p class="card-description">
+                Formulaire groupe
+            </p>
+           
+            <div class="form-group">
+                <label for="exampleInputName1">Label groupe</label>
+                <input type="text" class="form-control" @bind="group.LabelGp" placeholder="Label">
+            </div>
+
+            <div class="form-group">
+                <label for="exampleInputName1">Code du groupe</label>
+                <input type="text" class="form-control" @bind="group.Code" placeholder="Code">
+            </div>
+
+            <div class="form-group">
+                <label for="exampleInputEmail3">Date de création</label>
+                <input type="date" class="form-control" @bind="group.DateCreation">
+            </div>
+
+            <div class="form-group">
+                <label>Université</label>
+                <input type="text" class="form-control" @bind="group.IdUniversite" >
+            </div>
+
+
+            <div class="form-group">
+                <label for="exampleInputEmail3">Etat du stage</label>
+                <input type="text" class="form-control" @bind="group.EtatStage" placeholder="Etat du stage">
+            </div>
+
+            <button type="submit" class="btn btn-primary mr-2" @onclick="OnPostData">Soumettre</button>
+            <button class="btn btn-light">Cancel</button>
+        </div>
+    </div>
+</div>
+@code {
+
+    [Parameter]
+    public EventCallback<bool> OnChangeGroup { get; set; }
+
+    private async void OnPostData()
+    {
+
+        var data = await Services.CreateGroupe(group);
+        await OnChangeGroup.InvokeAsync(true);
+    }
+}

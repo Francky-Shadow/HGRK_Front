@@ -1,0 +1,93 @@
+﻿@inject hgrkapp.DTO.groupe group
+@inject hgrkapp.Repository.IServices.IGroupeServices services
+@using DTO
+
+
+@if (groupes != null)
+{
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <h4 class="card-title">Liste des universités</h4>
+                    <button class="btn-primary border-2" @onclick="OnButtonClicked">Ajouter</button>
+                </div>
+               
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>
+                                    ID
+                                </th>
+                                <th>
+                                    Label
+                                </th>
+                                <th>
+                                    Code
+                                </th>
+                                <th>
+                                    Date de création
+                                </th>
+                                <th>
+                                    Université
+                                </th>
+                                <th>
+                                    Etat du stage
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var data in groupes)
+                            {
+                                <tr>
+                                    <td class="py-1">
+                                        @data.Id
+                                    </td>
+                                    <td>
+                                        @data.LabelGp
+                                    </td>
+                                    <td>
+                                        @data.Code
+                                    </td>
+                                    <td>
+                                        @data.DateCreation
+                                    </td>
+                                    <td>
+                                        @data.IdUniversite
+                                    </td>
+                                    <td>
+                                        @data.EtatStage
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@code {
+    private List<groupe> groupes = new List<groupe>();
+    [Parameter]
+    public EventCallback<bool> OnChangeGroup { get; set; }
+
+    private async Task OnButtonClicked()
+    {
+
+        await OnChangeGroup.InvokeAsync(false);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        groupes = await services.GetGroupes();
+    }
+}
+
+@code {
+
+}

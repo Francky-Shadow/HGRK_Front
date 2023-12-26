@@ -8,6 +8,24 @@ namespace HGRK.Repository.Services
 {
     public class GroupeService : IGroupeServices
     {
+        public async Task<groupe> CreateGroupe(groupe groupe)
+        {
+            try
+            {
+
+                var response = await routes_const.CreateGroupe
+                     .PostJsonAsync(groupe)
+                     .ReceiveJson<groupe>();
+                return response;
+            }
+            catch (FlurlHttpException ex)
+            {
+                // Handle the exception or log it
+                Console.WriteLine($"Error during POST request: {ex.Message}");
+                throw;
+            }
+        }
+
         public async Task<List<groupe>> GetGroupes()
         {
             try

@@ -1,0 +1,21 @@
+﻿@page "/groupe"
+<h3>Groupe</h3>
+
+@if (showComponentList)
+{
+    <GroupList OnChangeGroup="HandleOnChange"></GroupList>
+}
+else
+{
+    <GroupForm OnChangeGroup="HandleOnChange"></GroupForm>
+}
+
+
+@code {
+    private bool showComponentList = true; // Commence avec UniversiteList
+
+    private void HandleOnChange(bool newState)
+    {
+        showComponentList = newState; // Bascule entre les composants
+    }
+}

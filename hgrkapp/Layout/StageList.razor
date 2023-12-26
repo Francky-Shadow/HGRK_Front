@@ -1,0 +1,81 @@
+﻿@using DTO
+@inject hgrkapp.DTO.stage stages
+@inject hgrkapp.Repository.IServices.IStageService Services
+
+@if (stagelist != null)
+{
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <h4 class="card-title">Liste des universités</h4>
+                    <button class="btn-primary border-2" @onclick="OnButtonClicked">Ajouter</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>
+                                    ID
+                                </th>
+                                <th>
+                                    DateDebut
+                                </th>
+                                <th>
+                                    DateFin
+                                </th>
+                                <th>
+                                    IdUniversite
+                                </th>
+                                <th>
+                                    EtatStage
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var data in stagelist)
+                            {
+                                <tr>
+                                    <td class="py-1">
+                                        @data.Id
+                                    </td>
+                                    <td>
+                                        @data.DateDebut
+                                    </td>
+                                    <td>
+                                        @data.DateFin
+                                    </td>
+                                    <td>
+                                        @data.IdUniversite
+                                    </td>
+                                    <td>
+                                        @data.EtatStage
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@code {
+    private List<stage> stagelist = new List<stage>();
+    [Parameter]
+    public EventCallback<bool> OnChange { get; set; }
+
+    private async Task OnButtonClicked()
+    {
+
+        await OnChange.InvokeAsync(false);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        stagelist = await Services.GetAllStage();
+    }
+}
