@@ -1,0 +1,110 @@
+﻿@inject hgrkapp.DTO.etudiant etudiantdto
+@inject hgrkapp.Repository.IServices.IEtudiantServices EtudiantServices
+<div class="col-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Enregistrement</h4>
+            <p class="card-description">
+                Formulaire d'enregistrement
+            </p>
+            <div class="row">
+                <div class="col-md-6">
+                    <!-- Nom -->
+                    <div class="form-group">
+                        <label for="nom">Nom</label>
+                        <input type="text" class="form-control" @bind="etudiantdto.Nom" placeholder="Entrez le nom">
+                    </div>
+
+                    <!-- Postnom -->
+                    <div class="form-group">
+                        <label for="postnom">Postnom</label>
+                        <input type="text" class="form-control" @bind="etudiantdto.Postnom" placeholder="Entrez le postnom">
+                    </div>
+
+                    <!-- Prénom -->
+                    <div class="form-group">
+                        <label for="prenom">Prénom</label>
+                        <input type="text" class="form-control" @bind="etudiantdto.Prenom" placeholder="Entrez le prénom">
+                    </div>
+
+                    <!-- Date de Naissance -->
+                    <div class="form-group">
+                        <label for="dateNaissance">Date de Naissance</label>
+                        <input type="date" class="form-control" @bind="etudiantdto.DateNaissance">
+                    </div>
+
+                    <!-- Sexe -->
+                    <div class="form-group">
+                        <label>Sexe</label>
+                        <select class="form-select" @bind="etudiantdto.Sexe">
+                            <option value="M">Masculin</option>
+                            <option value="F">Féminin</option>
+                        </select>
+                    </div>
+                    <!-- Apaye -->
+                    <div class="form-group">
+                        <label>Apaye</label>
+                        <select class="form-select" @bind="etudiantdto.Apaye">
+                            <option value="true">Oui</option>
+                            <option value="false">Non</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                   
+                    <!-- État du Stage -->
+                    <div class="form-group">
+                        <label for="etatStage">État du Stage</label>
+                        <input type="text" class="form-control" @bind="etudiantdto.EtatStage" placeholder="État du stage">
+                    </div>
+
+                    <!-- Photo URL -->
+                    <div class="form-group">
+                        <label for="photoUrl">Photo URL</label>
+                        <input type="file" accept="image/*" class="form-control" @bind="etudiantdto.PhotoUrl" placeholder="URL de la photo">
+                    </div>
+
+                    <!-- ID Université -->
+                    <div class="form-group">
+                        <label for="idUniversite">ID Université</label>
+                        <input type="number" class="form-control" @bind="etudiantdto.IdUniversite">
+                    </div>
+
+                    <!-- ID Groupe -->
+                    <div class="form-group">
+                        <label for="idGroupe">ID Groupe</label>
+                        <input type="number" class="form-control" @bind="etudiantdto.IdGroupe">
+                    </div>
+
+                    <!-- ID Stage -->
+                    <div class="form-group">
+                        <label for="idStage">ID Stage</label>
+                        <input type="number" class="form-control" @bind="etudiantdto.IdStage">
+                    </div>
+
+                    <!-- Autres -->
+                    <div class="form-group">
+                        <label for="autres">Autres informations</label>
+                        <textarea class="form-control" @bind="etudiantdto.Autres" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+           
+            <button type="submit" class="btn btn-primary mr-2" @onclick="OnPostData">Soumettre</button>
+            <button class="btn btn-light">Annuler</button>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public EventCallback<bool> OnChange { get; set; }
+
+    private async void OnPostData()
+    {
+        var data = await EtudiantServices.CreateEtudiantAsync(etudiantdto);
+        await OnChange.InvokeAsync(true);
+    }
+}

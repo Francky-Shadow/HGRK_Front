@@ -16,5 +16,12 @@
 
         public static string GetAllStage = string.Concat(Base, "api/Stages");
         public static string CreateStage = string.Concat(Base, "api/Stages");
+
+
+        public static string GetStudent = string.Concat(Base, "api/Etudiants");
+        public static string CreateStudent = string.Concat(Base, "api/Etudiants");
+
+
+        public static string MixedDataEtudiant = string.Concat(Base, "api/MixedData/student");
     }
 }

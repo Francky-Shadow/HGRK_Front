@@ -1,0 +1,90 @@
+﻿@inject hgrkapp.DTO.etudiant etudiantDTO
+@inject EtudiantMixedDto mixed
+@inject hgrkapp.Repository.IServices.IMixedServices MixedService
+@inject hgrkapp.Repository.IServices.IEtudiantServices serviceEtudiant
+@using DTO
+
+@if (etudiants != null)
+{
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <h4 class="card-title">Liste des étudiants</h4>
+                    <button class="btn-primary border-2" @onclick="OnButtonClicked">Ajouter un étudiant</button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-striped project-orders-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nom</th>
+                                <th>Postnom</th>
+                                <th>Prénom</th>
+                                <th>Date Nss</th>
+                                <th>Sexe</th>
+                                <th>A payé</th>
+
+                                <th>Université</th>
+                                <th>Groupe</th>
+                                <th>Actions</th>
+                                <!-- Ajouter d'autres colonnes si nécessaire -->
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var data in etudiantmixed)
+                            {
+                                <tr>
+                                    <td>@data.IdEtudiant</td>
+                                    <td>@data.NomEtudiant</td>
+                                    <td>@data.PostnomEtudiant</td>
+                                    <td>@data.PrenomEtudiant</td>
+                                    <td>@data.DateNaissanceEtudiant?.ToString("dd/MM/yyyy")</td>
+                                    <td>@data.Sexe</td>
+                                    <td>@data.Apaye</td>
+
+                                    <td>@data.NomUniversite</td>
+                                    <td>@data.CodeGp</td>
+                            
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <button type="button" class="btn btn-success btn-sm btn-icon-text mr-3">
+                                 
+                                                <i class="typcn typcn-edit btn-icon-append"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm btn-icon-text">
+                               
+                                                <i class="typcn typcn-delete-outline btn-icon-append"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<etudiant> etudiants = new List<etudiant>();
+    private IEnumerable<EtudiantMixedDto> etudiantmixed = new List<EtudiantMixedDto>();
+    [Parameter]
+    public EventCallback<bool> OnChange { get; set; }
+
+    private async Task OnButtonClicked()
+    {
+        await OnChange.InvokeAsync(false);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        etudiantmixed = await MixedService.GetMixedServicesAsync();
+    }
+}
