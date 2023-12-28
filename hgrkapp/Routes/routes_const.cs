@@ -23,5 +23,6 @@
 
 
         public static string MixedDataEtudiant = string.Concat(Base, "api/MixedData/student");
+        public static string MixedDataUniversiteStage = string.Concat(Base, "api/MixedData/stages");
     }
 }

@@ -23,5 +23,22 @@ namespace hgrkapp.Repository.Services
             }
             throw new NotImplementedException();
         }
+
+        public async Task<List<UniversiteStageDto>> GetUniversiteStageAsync()
+        {
+            try
+            {
+                var response = await routes_const.MixedDataUniversiteStage
+                     .GetJsonAsync<List<UniversiteStageDto>>();
+                return response;
+            }
+            catch (FlurlHttpException ex)
+            {
+                // Gérer l'exception ou la journaliser
+                Console.WriteLine($"Erreur lors de la requête GET: {ex.Message}");
+                throw;
+            }
+            throw new NotImplementedException();
+        }
     }
 }

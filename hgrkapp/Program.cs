@@ -14,6 +14,7 @@ builder.Services.AddSingleton<groupe>();
 builder.Services.AddSingleton<stage>();
 builder.Services.AddSingleton<etudiant>();
 builder.Services.AddSingleton<EtudiantMixedDto>();
+builder.Services.AddSingleton<UniversiteStageDto>();
 builder.Services.AddScoped<IUniversiteServices,UniversiteServices>();
 builder.Services.AddScoped<IStageService,StageService>();
 builder.Services.AddScoped<IGroupeServices, GroupeService>();
