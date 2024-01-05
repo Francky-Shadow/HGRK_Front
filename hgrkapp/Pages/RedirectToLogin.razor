@@ -1,0 +1,11 @@
+﻿
+
+@code {
+     [Inject] private NavigationManager Navigation { get; set; }
+
+        protected override void OnInitialized()
+        {
+            // Rediriger vers la page de connexion
+            Navigation.NavigateTo("/authentication");
+        }
+}
