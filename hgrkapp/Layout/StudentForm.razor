@@ -1,5 +1,11 @@
 ﻿@inject hgrkapp.DTO.etudiant etudiantdto
+@inject hgrkapp.DTO.universite universite
+@inject  hgrkapp.DTO.groupe groupe
+@inject hgrkapp.DTO.stage stage
 @inject hgrkapp.Repository.IServices.IEtudiantServices EtudiantServices
+@inject hgrkapp.Repository.IServices.IUniversiteServices UniversiteService
+@inject hgrkapp.Repository.IServices.IGroupeServices GroupeService
+@inject hgrkapp.Repository.IServices.IStageService StageService
 <div class="col-12 grid-margin stretch-card">
     <div class="card">
         <div class="card-body">
@@ -68,19 +74,41 @@
                     <!-- ID Université -->
                     <div class="form-group">
                         <label for="idUniversite">ID Université</label>
-                        <input type="number" class="form-control" @bind="etudiantdto.IdUniversite">
+                        <select class="form-select"  @bind="etudiantdto.IdUniversite">
+                            @foreach(var data in universites)
+                            {
+                                   <option value="@data.Id">@data.Nom</option>
+                            }
+                         
+                        </select>
                     </div>
 
                     <!-- ID Groupe -->
                     <div class="form-group">
                         <label for="idGroupe">ID Groupe</label>
-                        <input type="number" class="form-control" @bind="etudiantdto.IdGroupe">
+
+                        <select class="form-select" @bind="etudiantdto.IdGroupe">
+                            @foreach(var data in groupes)
+                            {
+                                  <option value="@data.Id">@data.LabelGp</option>
+                            }
+                          
+                        </select>
+
+                 
                     </div>
 
                     <!-- ID Stage -->
                     <div class="form-group">
                         <label for="idStage">ID Stage</label>
-                        <input type="number" class="form-control" @bind="etudiantdto.IdStage">
+                        <select class="form-select" @bind="etudiantdto.IdStage">
+                            @foreach(var data in stages)
+                            {
+                                  <option value="@data.Id">@data.Id</option>
+                            }
+                          
+                        </select>
+                     
                     </div>
 
                     <!-- Autres -->
@@ -101,6 +129,15 @@
 
     [Parameter]
     public EventCallback<bool> OnChange { get; set; }
+    private List<hgrkapp.DTO.universite> universites = new List<hgrkapp.DTO.universite>();
+    private List<hgrkapp.DTO.groupe> groupes = new List<DTO.groupe>();
+    private List<hgrkapp.DTO.stage> stages = new List<DTO.stage>();
+    protected override async Task OnInitializedAsync()
+    {
+        universites = await UniversiteService.GetUniversite();
+        groupes = await GroupeService.GetGroupes();
+        stages = await StageService.GetAllStage();
+    }
 
     private async void OnPostData()
     {

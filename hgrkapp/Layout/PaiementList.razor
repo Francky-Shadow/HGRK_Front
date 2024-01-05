@@ -1,0 +1,56 @@
+﻿@inject hgrkapp.DTO.paiement paiement
+@inject hgrkapp.Repository.IServices.IPaiementServices PaiementService
+@inject hgrkapp.DTO.PaiementMixedDto paiementmixed_dto
+@using Blazorise
+
+
+@if (paiementList != null)
+            {
+    <DataGrid TItem="hgrkapp.DTO.PaiementMixedDto"
+          Data="@paiementList"
+          @bind-SelectedRow="@selectedPaiement"
+          Editable
+          Responsive>
+    <DataGridCommandColumn>
+        <NewCommandTemplate>
+            <Blazorise.Button Color="Blazorise.Color.Success" Clicked="@OnButtonClicked">Nouveau</Blazorise.Button>
+        </NewCommandTemplate>
+        <EditCommandTemplate>
+            <Blazorise.Button Color="Blazorise.Color.Primary" Clicked="@context.Clicked"><i  class="fa fa-edit"></i></Blazorise.Button>
+        </EditCommandTemplate>
+         <DeleteCommandTemplate>
+             <Blazorise.Button Color="Blazorise.Color.Danger" Clicked="@context.Clicked"><i class="fa fa-trash"></i></Blazorise.Button>
+         </DeleteCommandTemplate>
+    </DataGridCommandColumn>
+    <DataGridColumn Field="@nameof(hgrkapp.DTO.PaiementMixedDto.IdPaiement)" Caption="#" Sortable="false" />
+    <DataGridColumn Field="@nameof(hgrkapp.DTO.PaiementMixedDto.NomEtudiant)" Caption="Nom" Editable="false" />
+    <DataGridColumn Field="@nameof(hgrkapp.DTO.PaiementMixedDto.PostnomEtudiant)" Caption="Post-Nom" Editable="false" />
+    <DataGridColumn Field="@nameof(hgrkapp.DTO.PaiementMixedDto.PrenomEtudiant)" Caption="Prénom" Editable="false" />
+    <DataGridColumn Field="@nameof(hgrkapp.DTO.PaiementMixedDto.Montant)" Caption="Montant" Editable />
+    <DataGridColumn Field="@nameof(hgrkapp.DTO.PaiementMixedDto.RtxNum)" Caption="RtxNum" Editable="false" />
+   
+</DataGrid>
+
+            }
+
+@code {
+    private List<hgrkapp.DTO.paiement> paiements = new List<hgrkapp.DTO.paiement>();
+    [Parameter]
+    public EventCallback<bool> OnChangeGroup { get; set; }
+
+    private async Task OnButtonClicked()
+    {
+
+        await OnChangeGroup.InvokeAsync(false);
+    }
+
+  
+    private List<hgrkapp.DTO.PaiementMixedDto> paiementList;
+    private hgrkapp.DTO.PaiementMixedDto selectedPaiement;
+
+    protected override async Task OnInitializedAsync()
+    {
+        paiementList = await PaiementService.GetPaiements();
+        await base.OnInitializedAsync();
+    }
+}

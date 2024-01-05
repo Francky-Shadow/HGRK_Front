@@ -1,0 +1,146 @@
+﻿@page "/paiements"
+@inject hgrkapp.DTO.EtudiantMixedDto etudiant
+@inject hgrkapp.Repository.IServices.IEtudiantServices EtudiantService
+@inject hgrkapp.DTO.SearchStudentResultDto search
+<h3>Paiements</h3>
+@if (showComponentList == true)
+{
+    <PaiementList OnChangeGroup="HandleOnChangeSecond"/>
+}
+else
+{
+<PaimentForm OnChange="HandleOnChange"/>
+}
+
+
+
+<Modal @ref="modalRef">
+    <ModalContent Centered Size="ModalSize.Large">
+        <ModalHeader>
+            <ModalTitle>Rechercher un étudiant</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            <Alert Color="Color.Danger" @bind-Visible="visible">
+                <AlertMessage>Attention!</AlertMessage>
+                <AlertDescription>Veuillez saisir le nom recherché</AlertDescription>
+            </Alert>
+            <Field>
+                <FieldLabel>Nom de l'étudiant</FieldLabel>
+                <TextEdit @bind-Text="searchvalue"  Placeholder="Saisissez le nom..." />
+            </Field>
+            <button class="btn btn-success" @onclick="SearchData">Rechercher</button>
+
+            @if (etudiantmixed != null)
+                        {
+                            <Field>
+                <FieldLabel>Surname</FieldLabel>
+               <div class="table-responsive">
+                        <table class="table table-striped project-orders-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nom</th>
+                                    <th>Sexe</th>
+                                    <th>Université</th>
+                                    <th>Groupe</th>
+                                    <th>Actions</th>
+                                    <!-- Ajouter d'autres colonnes si nécessaire -->
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach (var data in etudiantmixed)
+                                {
+                                    <tr>
+                                        <td>@data.IdEtudiant</td>
+                                        <td>@data.NomEtudiant @data.PostnomEtudiant @data.PrenomEtudiant</td>
+                               
+                                        <td>@data.Sexe</td>
+
+                                        <td>@data.NomUniversite</td>
+                                        <td>@data.CodeGp</td>
+            
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <button type="button" @onclick="() => CallForm(data)" class="btn btn-success btn-sm btn-icon-text mr-3">
+                 
+                                                    <i class="typcn typcn-edit btn-icon-append"></i>
+                                                </button>
+                                              
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </Field>
+                        }
+   
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Secondary" Clicked="@HideModal">Fermer</Button>
+            @*<Button Color="Color.Primary" Clicked="@HideModal">Save Changes</Button>*@
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+
+
+@code {
+    bool visible = false;
+    string searchvalue = "";
+    private IEnumerable<hgrkapp.DTO.EtudiantMixedDto> etudiantmixed = new List<hgrkapp.DTO.EtudiantMixedDto>();
+    private bool showComponentList = true; // Commence avec UniversiteList
+
+    private void HandleOnChangeSecond(bool newstate)
+    {
+             visible = false;
+            etudiantmixed = null;
+
+        ShowModal();
+        showComponentList = !showComponentList;
+    }
+    private void HandleOnChange(bool newState)
+    {
+        visible = false;
+        etudiantmixed = null;
+        showComponentList = !showComponentList;
+       
+    }
+    private async Task SearchData()
+    {
+        visible = false;
+        if (string.IsNullOrEmpty(searchvalue))
+        {
+            visible = true;
+        }
+        else
+        {
+            etudiantmixed = await EtudiantService.SearchStudentByName(searchvalue);
+        }
+
+    }
+
+    private void CallForm(hgrkapp.DTO.EtudiantMixedDto mixedDto)
+    {
+        search.Fulname = mixedDto.NomEtudiant + " " + mixedDto.PostnomEtudiant + " " + mixedDto.PrenomEtudiant;
+        search.Id = mixedDto.IdEtudiant;
+        showComponentList = false;
+        HideModal();
+    }
+
+    private Modal modalRef;
+
+    private Task ShowModal()
+    {
+        return modalRef.Show();
+    }
+
+    private Task HideModal()
+    {
+        return modalRef.Hide();
+    }
+}
+

@@ -1,6 +1,7 @@
 ﻿@page "/"
 @inject hgrkapp.DTO.EtudiantMixedDto mixed
 @inject hgrkapp.Repository.IServices.IMixedServices Service
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
 <div class="row">
     <div class="col-md-4 grid-margin stretch-card">
         <div class="card">
@@ -63,9 +64,10 @@
                         </tr>
                     </thead>
                     <tbody>
+                           @foreach (var data in StageUnivList)
+   {
                         <tr>
-                            @foreach (var data in StageUnivList)
-                            {
+                         
                                 <td>#@data.IdStage</td>
                                 <td>@data.DateDebut </td>
                                 <td>@data.DateFin</td>
@@ -85,10 +87,8 @@
                                     </div>
                                 </td>
 
-                            }
-
                         </tr>
-                       
+                         }
                     </tbody>
                 </table>
             </div>

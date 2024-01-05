@@ -24,5 +24,24 @@
 
         public static string MixedDataEtudiant = string.Concat(Base, "api/MixedData/student");
         public static string MixedDataUniversiteStage = string.Concat(Base, "api/MixedData/stages");
+
+
+        //Routes pour les paiements
+        public static string CreateNewPaiment = string.Concat(Base, "api/Paiements");
+        public static string GetPaiements = string.Concat(Base, "api/Paiements");
+        public static string GetMixedDataPaiement = string.Concat(Base, "api/MixedData/paiements");
+
+
+        //Routes départements
+
+        public static string CreateDepartement = string.Concat(Base, "api/Departements");
+        public static string GetDepartement = string.Concat(Base, "api/Departements");
+
+
+        //SearchMethods
+
+        public static string SearchStudentByName = string.Concat(Base, "api/Etudiants/recherche/");
+
+        public static string Login = string.Concat(Base, "api/Authentication/Login");
     }
 }
