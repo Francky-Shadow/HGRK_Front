@@ -13,8 +13,9 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
-
-
+using Blazorise.FluentValidation;
+using FluentValidation;
+using hgrkapp.Validations;
 
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -24,9 +25,16 @@ builder.Services
         options.Immediate = true;
     })
     .AddBootstrapProviders()
-    .AddFontAwesomeIcons();
+    .AddFontAwesomeIcons()
+    .AddBlazoriseFluentValidation();
+
+builder.Services.AddValidatorsFromAssembly(typeof(App).Assembly);
 builder.RootComponents.Add<App>("#app");
+
+
 builder.RootComponents.Add<HeadOutlet>("head::after");
+
+builder.Services.AddSingleton<RegisterResponse>();
 builder.Services.AddSingleton<universite>();
 builder.Services.AddSingleton<groupe>();
 builder.Services.AddSingleton<stage>();
@@ -36,9 +44,13 @@ builder.Services.AddSingleton<EtudiantMixedDto>();
 builder.Services.AddSingleton<UniversiteStageDto>();
 builder.Services.AddSingleton<paiement>();
 builder.Services.AddSingleton<departement>();
+builder.Services.AddSingleton<CountDto>();
+builder.Services.AddSingleton<session>();
+builder.Services.AddSingleton<EtudiantSimilaireInfo>();
 
 builder.Services.AddSingleton<SearchStudentResultDto>();
-
+builder.Services.AddScoped<ISessionServices, SessionService>();
+builder.Services.AddScoped<ICountServices, CountServices>();
 builder.Services.AddScoped<IDepartementServices,DepartementServices>();
 builder.Services.AddScoped<IUniversiteServices,UniversiteServices>();
 builder.Services.AddScoped<IStageService,StageService>();

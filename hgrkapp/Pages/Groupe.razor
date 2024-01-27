@@ -3,19 +3,38 @@
 
 @if (showComponentList)
 {
-    <GroupList OnChangeGroup="HandleOnChange"></GroupList>
+    <Animate Anchor="#b-animate" Auto Animation="selectedAnimation" DelayMilliseconds="500">
+        <GroupList OnChangeGroup="HandleOnChange"  OnCancelGroup="HandleOnChange"></GroupList>
+    </Animate>
 }
 else
 {
-    <GroupForm OnChangeGroup="HandleOnChange"></GroupForm>
+    <GroupForm OnChangeGroup="HandleOnChange" OnCancelGroup="HandleOnChange"></GroupForm>
 }
 
 
 @code {
+     private IAnimation selectedAnimation = Animations.FadeIn;
     private bool showComponentList = true; // Commence avec UniversiteList
-
+     private bool showAnimate = false;
     private void HandleOnChange(bool newState)
     {
         showComponentList = newState; // Bascule entre les composants
+    }
+     private async Task Animate()
+    {
+        if ( !showAnimate )
+        {
+            showAnimate = true;
+            await InvokeAsync( StateHasChanged );
+        
+        }
+        else
+        {
+            showAnimate = false;
+
+        }
+
+        await InvokeAsync( StateHasChanged );
     }
 }

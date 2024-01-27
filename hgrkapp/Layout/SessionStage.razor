@@ -1,0 +1,112 @@
+﻿@page "/session"
+@inject hgrkapp.DTO.session session
+@inject hgrkapp.Repository.IServices.ISessionServices SessionService
+@using Blazorise
+
+<DataGrid TItem="hgrkapp.DTO.session"
+      Data="@sessionList"
+      @bind-SelectedRow="@selectedSession"
+      Editable="true"
+      RowUpdated="@OnRowUpdated"
+      RowInserted="@OnRowInserted"
+      Responsive>
+<DataGridCommandColumn>
+    <NewCommandTemplate>
+        <Blazorise.Button Color="Blazorise.Color.Success" Clicked="@context.Clicked">Nouveau</Blazorise.Button>
+    </NewCommandTemplate>
+    <EditCommandTemplate>
+        <Blazorise.Button Color="Blazorise.Color.Primary" Clicked="@context.Clicked"><i  class="fa fa-edit"></i></Blazorise.Button>
+    </EditCommandTemplate>
+     <DeleteCommandTemplate>
+         <Blazorise.Button Color="Blazorise.Color.Danger" Clicked="@context.Clicked"><i class="fa fa-trash"></i></Blazorise.Button>
+     </DeleteCommandTemplate>
+     <CancelCommandTemplate>
+         <Blazorise.Button Color="Blazorise.Color.Primary" Clicked="@context.Clicked">Annuler</Blazorise.Button>
+     </CancelCommandTemplate>
+       <SaveCommandTemplate>
+            <Blazorise.Button Color="Blazorise.Color.Warning" Clicked="@context.Clicked">Enregistrer</Blazorise.Button>
+    </SaveCommandTemplate>
+</DataGridCommandColumn>
+
+
+
+<DataGridColumn Field="@nameof(hgrkapp.DTO.session.Id)" Caption="#" Sortable="false" />
+<DataGridColumn Field="@nameof(hgrkapp.DTO.session.Rang)" Caption="Rang" Editable/>
+<DataGridColumn Field="@nameof(hgrkapp.DTO.session.DateDebut)" Caption="Début" Editable/>
+<DataGridColumn Field="@nameof(hgrkapp.DTO.session.DateFin)" Caption="Fin" Editable/>
+<DataGridColumn Field="@nameof(hgrkapp.DTO.session.NomDepartement)" Caption="Département" Editable/>
+<DataGridColumn Field="@nameof(hgrkapp.DTO.session.IdStage)" Caption="Id Stage" Editable/>
+<DataGridColumn Field="@nameof(hgrkapp.DTO.session.IdGroupe)" Caption="Id Groupe" Editable/>
+<DataGridColumn Field="@nameof(hgrkapp.DTO.session.EtatStage)" Caption="Etat stage" Editable/>
+
+
+    </DataGrid>
+
+@code {
+        private List<hgrkapp.DTO.session> departements = new List<hgrkapp.DTO.session>();
+    [Parameter]
+    public EventCallback<bool> OnChangeGroup { get; set; }
+
+    private async Task OnButtonClicked()
+    {
+
+        await OnChangeGroup.InvokeAsync(false);
+    }
+    private async Task OnRowInserted(SavedRowItem<hgrkapp.DTO.session,Dictionary<string,object>> savedRowItem)
+{
+    // Accédez aux données saisies à partir de l'objet SavedRowItem
+    var newData = savedRowItem.Item; // newData contient les données saisies
+
+    // Insérez les données dans la base de données
+    await InsertDataIntoDatabase(newData);
+
+    // Effacez l'objet selectedDepartement ou effectuez d'autres actions après l'enregistrement
+    selectedSession = new hgrkapp.DTO.session();
+}
+
+private async Task InsertDataIntoDatabase(hgrkapp.DTO.session data)
+{
+    // Appeler votre méthode de service pour insérer les données dans la base de données
+    await SessionService.CreateSession(data);
+
+    // En option, déclencher un événement ou effectuer d'autres actions après l'insertion
+    await OnChangeGroup.InvokeAsync(true);
+}
+
+    private async Task OnRowUpdated(SavedRowItem<hgrkapp.DTO.session,Dictionary<string,object>> savedRowItem)
+    {
+        try
+        {
+            var updatedData = savedRowItem.Item; // Données mises à jour
+
+            // Mettre à jour les données dans la base de données
+            await UpdateDataInDatabase(updatedData);
+
+            // Effacer l'objet selectedDepartement ou effectuer d'autres actions après la mise à jour
+            selectedSession = null;
+        }
+        catch (Exception ex)
+        {
+            // Gérer les exceptions, par exemple, afficher un message d'erreur
+            Console.WriteLine($"Erreur lors de la mise à jour : {ex.Message}");
+        }
+    }
+
+    private async Task UpdateDataInDatabase(hgrkapp.DTO.session updatedData)
+    {
+        // Appeler votre méthode de service pour mettre à jour les données dans la base de données
+        //await DepartementServices.UpdateDepartement(updatedData.Id, updatedData);
+
+        // En option, déclencher un événement ou effectuer d'autres actions après la mise à jour
+        await OnChangeGroup.InvokeAsync(true);
+    }
+
+    private List<hgrkapp.DTO.session> sessionList;
+    private hgrkapp.DTO.session selectedSession;
+
+    protected override async Task OnInitializedAsync()
+    {
+        sessionList = await SessionService.GetSession();
+        await base.OnInitializedAsync();
+    }
+}

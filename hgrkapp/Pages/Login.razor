@@ -1,8 +1,41 @@
 ﻿@page "/authentication"
+
+
 @layout AuthLayout
 @inject hgrkapp.DTO.User user
 @inject hgrkapp.Repository.IServices.IAuthenticationService AuthService
 @inject NavigationManager NavigationManager
+
+@using Blazorise
+@using Blazorise.Bootstrap
+@using Blazorise.Animate
+@using Blazorise.LoadingIndicator
+
+@if (state == false)
+{
+    <Alert Color="Color.Danger" Visible>
+        <AlertMessage>Attention!</AlertMessage>
+        <AlertDescription>Mot de passe ou nom d'utilisateur incorrect.</AlertDescription>
+    </Alert>
+}
+
+
+
+
+
+<LoadingIndicator @ref="loadingIndicator" FullScreen FadeIn>
+   
+    <IndicatorTemplate>
+        <Animate Animation="Animations.FadeDownRight" Auto Duration="TimeSpan.FromMilliseconds( 700 )">
+             <Div>
+                    <img src="/Animation.gif" />
+            </Div>
+        </Animate>
+    </IndicatorTemplate>
+</LoadingIndicator>
+
+
+
  <div class="form-group">
    <input type="text" class="form-control form-control-lg" @bind="user.Username" placeholder="Nom d'utilisateur">
  </div>
@@ -15,13 +48,47 @@
    <a class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" @onclick="HandleLogin">Se connecter</a>
  </div>
 
+
+
 @code{
+    LoadingIndicator loadingIndicator;
+    bool state = true;
+    async Task ShowIndicator()
+    {
+        await loadingIndicator.Show();
+
+        await Task.Delay( 3000 ); // Do work ...
+
+        await loadingIndicator.Hide();
+    }
+    bool visible = true;
+
+    Task OnButtonClick()
+    {
+        visible = !visible;
+
+        return Task.CompletedTask;
+    }
+
+
     private async Task HandleLogin()
     {
+        state = true;
+        await loadingIndicator.Show();
         var data = await AuthService.Login(user);
-         if (data!=null)
-                {
-                    NavigationManager.NavigateTo("/");
-                }
+
+        if (data.Successful == true)
+
+        {
+            state = true;
+            await Task.Delay(3000);
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            await loadingIndicator.Hide();
+            state = false;
+        }
+        await loadingIndicator.Hide();
     }
 }

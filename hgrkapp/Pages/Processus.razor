@@ -1,0 +1,89 @@
+﻿@page "/nouveau"
+<h3>Processus d'enregistrement</h3>
+
+
+@if (showComponent1)
+{
+     <Animate Anchor="#b-animate" Auto Animation="selectedAnimation" DelayMilliseconds="500">
+    <Processur1 OnChangeGroup="HandleOnChange"  OnCancelGroup="HandleCancelOnChange"></Processur1>
+          </Animate>
+}
+else if(showComponent2)
+{
+     <Animate Anchor="#b-animate" Auto Animation="selectedAnimation" DelayMilliseconds="500">
+    <StudentFormWithList OnChangeGroup="HandleOnChange" OnCancelGroup="HandleCancelOnChange"></StudentFormWithList>
+           </Animate>
+}else if (showComponent3)
+            {
+    
+     <Animate Anchor="#b-animate" Auto Animation="selectedAnimation" DelayMilliseconds="500">
+    <Processus2 OnChangeGroup="HandleOnChange" OnCancelGroup="HandleCancelOnChange"></Processus2>
+           </Animate>
+            }
+
+
+@code {
+    private bool showComponent1 = true; // Commence avec UniversiteList
+    private bool showComponent2 = true; // Commence avec UniversiteList
+    private bool showComponent3 = true; // Commence avec UniversiteList
+
+
+
+    private IAnimation selectedAnimation = Animations.ZoomInDown;
+    private bool showAnimate = false;
+
+
+  
+
+    private async Task Animate()
+    {
+        if ( !showAnimate )
+        {
+            showAnimate = true;
+            await InvokeAsync( StateHasChanged );
+
+        }
+        else
+        {
+            showAnimate = false;
+
+        }
+
+        await InvokeAsync( StateHasChanged );
+    }
+
+    private void HandleOnChange(bool newState)
+    {
+        if (showComponent1)
+        {
+            showComponent1 = false;
+            showComponent2 = true;
+            showComponent3 = false;
+        }else if (showComponent2)
+            {
+             showComponent1 = false;
+             showComponent2 = false;
+             showComponent3 = true;
+            }
+        //showComponent1 = newState; // Bascule entre les composants
+    }
+
+
+
+      private void HandleCancelOnChange(bool newState)
+  {
+      if (showComponent2)
+      {
+          showComponent1 = true;
+          showComponent2 = false;
+          showComponent3 = false;
+      }else if (showComponent3)
+          {
+           showComponent1 = false;
+           showComponent2 = true;
+           showComponent3 = false;
+          }
+      //showComponent1 = newState; // Bascule entre les composants
+  }
+}
+

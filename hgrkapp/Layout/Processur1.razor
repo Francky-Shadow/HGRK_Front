@@ -1,14 +1,14 @@
 ﻿@inject hgrkapp.DTO.groupe group
 @inject hgrkapp.Repository.IServices.IGroupeServices Services
 @inject hgrkapp.Repository.IServices.IUniversiteServices UniversiteService
-
+@inject hgrkapp.Repository.IServices.IStageService StageService
+@inject hgrkapp.DTO.EtudiantSimilaireInfo info
+@inject hgrkapp.DTO.stage stage
 <div class="col-12 grid-margin stretch-card">
     <div class="card">
         <div class="card-body">
-            <h4 class="card-title">Enregistrement d'un groupe</h4>
-            <p class="card-description">
-                Formulaire groupe
-            </p>
+            <h4 class="card-title"> Formulaire de création de groupe</h4>
+         
            <ShowAlertComponentInForms Errors="validationErrors"/>
             <div class="form-group">
                 <label for="exampleInputName1">Label groupe</label>
@@ -18,13 +18,12 @@
             <div class="form-group">
                 <label for="exampleInputName1">Code du groupe</label>
                 <select class="form-select"  @bind="group.Code">
-                       <option value="1">--Sélectionner--</option>
+                    <option value="1">--Sélectionner--</option>
                     <option value="1">Groupe 1</option>
                     <option value="2">Groupe 2</option>
                     <option value="3">Groupe 3</option>
                     <option value="4">Groupe 4</option>
-            </select>
-              
+                 </select>
             </div>
 
 
@@ -41,19 +40,8 @@
              
             </div>
 
-             <div class="form-group">
-                  <label>Etat du stage</label>
-                  <select class="form-select" @bind="group.EtatStage">
-                      <option value="">--Sélectionner--</option>
-                      <option value="en cours">en cours</option>
-                      <option value="en attente">en attente</option>
-                      <option value="terminé">terminé</option>
-                  </select>
+            <button type="submit" class="btn btn-primary mr-2" @onclick="OnPostData">Suivant <i class="fa fa-arrow-alt-circle-right"></i></button>
 
-              </div>
-
-            <button type="submit" class="btn btn-primary mr-2" @onclick="OnPostData">Soumettre</button>
-            <button class="btn btn-light" @onclick="OnCancelData">Annuler</button>
         </div>
     </div>
 </div>
@@ -67,7 +55,7 @@
     public EventCallback<bool> OnChangeGroup { get; set; }
 
 
-        [Parameter]
+    [Parameter]
     public EventCallback<bool> OnCancelGroup { get; set; }
 
     private async void OnCancelData()
@@ -77,11 +65,20 @@
 
     private async void OnPostData()
     {
+
         validationErrors = group.Validate();
         if (validationErrors.Count == 0)
         {
+            group.EtatStage = "en cours";
             var data = await Services.CreateGroupe(group);
-            await OnChangeGroup.InvokeAsync(true);
+
+            info.IdGroupe = data.Id;
+            info.IdUniversite = data.IdUniversite;
+            stage.IdUniversite = data.IdUniversite;
+
+            var sata = await StageService.CreateStage(stage);
+            info.IdStage = sata.Id;
+            await OnChangeGroup.InvokeAsync(false);
         }
         else
         {
@@ -93,4 +90,9 @@
         universites = await UniversiteService.GetUniversite();
         base.OnInitializedAsync();
     }
+}
+
+
+@code {
+
 }

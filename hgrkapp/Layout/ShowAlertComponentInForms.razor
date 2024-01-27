@@ -1,0 +1,18 @@
+﻿
+@if (Errors != null && Errors.Any())
+{
+    <Alert Color="Color.Danger" Visible>
+        <AlertMessage>Attention!</AlertMessage>
+        <AlertDescription>
+            @foreach (var error in Errors)
+            {
+                <p>@error</p>
+            }
+        </AlertDescription>
+    </Alert>
+}
+
+@code {
+    [Parameter]
+    public List<string> Errors { get; set; }
+}

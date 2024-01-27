@@ -75,13 +75,17 @@
     private List<groupe> groupes = new List<groupe>();
     [Parameter]
     public EventCallback<bool> OnChangeGroup { get; set; }
-
+        [Parameter]
+    public EventCallback<bool> OnCancelGroup { get; set; }
     private async Task OnButtonClicked()
     {
 
         await OnChangeGroup.InvokeAsync(false);
     }
-
+     private async void OnCancelData()
+ {
+     OnCancelGroup.InvokeAsync(false);
+ }
     protected override async Task OnInitializedAsync()
     {
         groupes = await services.GetGroupes();

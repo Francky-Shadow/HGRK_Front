@@ -43,6 +43,25 @@ namespace hgrkapp.Repository.Services
             throw new NotImplementedException();
         }
 
+        public async Task<string> SaveListOffStudent(List<etudiant> etudiants)
+        {
+            try
+            {
+
+                var response = await routes_const.SaveListOfStudent
+                     .PostJsonAsync(etudiants)
+                     .ReceiveJson<string>();
+                    
+                return response;
+            }
+            catch (FlurlHttpException ex)
+            {
+                // Handle the exception or log it
+                Console.WriteLine($"Error during POST request: {ex.Message}");
+                throw;
+            }
+        }
+
         public async Task<IEnumerable<EtudiantMixedDto>> SearchStudentByName(string name)
         {
             try

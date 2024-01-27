@@ -1,0 +1,113 @@
+﻿@inject hgrkapp.DTO.session _session
+@inject hgrkapp.Repository.IServices.IDepartementServices DepartementService
+@inject hgrkapp.Repository.IServices.ISessionServices SessionService
+@inject hgrkapp.DTO.EtudiantSimilaireInfo simdata
+@inject NavigationManager Navigation
+@if (state == false)
+{
+
+<div class="col-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Session de stage</h4>
+            
+          
+            <div class="form-group">
+                <label for="exampleInputName1">Nom du département</label>
+
+                <select class="form-select" @bind="_session.NomDepartement">
+                       <option value="">--Sélectionner--</option>
+                    @foreach(var data in ListDepartement)  
+                    {
+                       <option value="@data.Nom">@data.Nom</option>
+                    }
+                </select>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                     <div class="form-group">
+                          <label for="exampleInputName1">Date de début</label>
+                          <input class="form-control" type="date" @bind="_session.DateDebut"/>
+                     </div>
+                </div>
+                 <div class="col-md-6">
+                        <div class="form-group">
+                         <label for="exampleInputName1">Date de Fin</label>
+                         <input class="form-control" type="date" @bind="_session.DateFin"/>
+                        </div>
+               </div>
+            </div>
+           
+            <div class="form-group">
+                <label for="exampleInputName1">Rang de la session</label>
+                <select class="form-select"  @bind="_session.Rang">
+                     <option value="1">--Sélectionner--</option>
+                    <option value="1">Groupe 1</option>
+                    <option value="2">Groupe 2</option>
+                    <option value="3">Groupe 3</option>
+                    <option value="4">Groupe 4</option>
+            </select>
+              
+            </div>
+
+
+         
+            <button type="submit" class="btn btn-primary mr-2" @onclick="OnCancelData"><i class="fa fa-arrow-alt-circle-left"></i> Précédent</button>
+            <button type="submit" class="btn btn-success mr-2" @onclick="OnPostData">Soumettre <i class="fa fa-arrow-alt-circle-right"></i></button>
+
+        </div>
+    </div>
+</div>
+}
+else
+{
+     <h4 class="mt-4 text-success">Enregistrement effectué! <i class="fa fa-circle-exclamation"></i></h4>
+
+      <button type="submit" class="btn btn-secondary mr-2 mt-4" @onclick="OkMethode">Ok <i class="fa fa-building-circle-xmark"></i></button>
+      <button type="submit" class="btn btn-primary mr-2 mt-4" @onclick="NewMethode">Nouveau <i class="fa fa-plus"></i></button>
+}
+
+@code {
+
+    private async void OkMethode()
+    {
+        
+        Navigation.NavigateTo("/");
+    }
+    private async void NewMethode()
+        {
+         Navigation.NavigateTo("/nouveau");
+        }
+    bool state = false;
+
+    private List<hgrkapp.DTO.departement> ListDepartement = new List<hgrkapp.DTO.departement>();
+    [Parameter]
+    public EventCallback<bool> OnChangeGroup { get; set; }
+
+
+    [Parameter]
+    public EventCallback<bool> OnCancelGroup { get; set; }
+
+    private async void OnCancelData()
+    {
+        OnCancelGroup.InvokeAsync(true);
+    }
+    private async void OnPostData()
+    {
+        _session.EtatStage = "en cours";
+        _session.IdGroupe = simdata.IdGroupe;
+        _session.IdStage = simdata.IdStage;
+        var data = await SessionService.CreateSession(_session);
+        if (data != null)
+        {
+            state = true;
+            StateHasChanged();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        state = false;
+        ListDepartement = await DepartementService.GetDDepartements();
+    }
+}

@@ -1,15 +1,21 @@
 ﻿@page "/"
 @inject hgrkapp.DTO.EtudiantMixedDto mixed
 @inject hgrkapp.Repository.IServices.IMixedServices Service
+@inject hgrkapp.Repository.IServices.ICountServices CountService
+@inject hgrkapp.DTO.CountDto dto
 @attribute [Microsoft.AspNetCore.Authorization.Authorize]
+
 <div class="row">
     <div class="col-md-4 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
                 <div class="d-flex align-items-center justify-content-between justify-content-md-center justify-content-xl-between flex-wrap mb-4">
                     <div>
-                        <p class="mb-2 text-md-center text-lg-left">Total Expenses</p>
-                        <h1 class="mb-0">8742</h1>
+                        <p class="mb-2 text-md-center text-lg-left">Total Etudiants</p>
+         
+                         <h1 class="mb-0">@dto.EtudiantCount</h1>
+            
+                       
                     </div>
                     <i class="typcn typcn-briefcase icon-xl text-secondary"></i>
                 </div>
@@ -22,8 +28,10 @@
             <div class="card-body">
                 <div class="d-flex align-items-center justify-content-between justify-content-md-center justify-content-xl-between flex-wrap mb-4">
                     <div>
-                        <p class="mb-2 text-md-center text-lg-left">Total Budget</p>
-                        <h1 class="mb-0">47,840</h1>
+                        <p class="mb-2 text-md-center text-lg-left">Total groupes</p>
+               
+              <h1 class="mb-0">@dto.GroupeCount</h1>
+                 
                     </div>
                     <i class="typcn typcn-chart-pie icon-xl text-secondary"></i>
                 </div>
@@ -36,8 +44,10 @@
             <div class="card-body">
                 <div class="d-flex align-items-center justify-content-between justify-content-md-center justify-content-xl-between flex-wrap mb-4">
                     <div>
-                        <p class="mb-2 text-md-center text-lg-left">Total Balance</p>
-                        <h1 class="mb-0">$7,243</h1>
+                        <p class="mb-2 text-md-center text-lg-left">Stages en cours</p>
+
+              <h1 class="mb-0">@dto.StageCount</h1>
+ 
                     </div>
                     <i class="typcn typcn-clipboard icon-xl text-secondary"></i>
                 </div>
@@ -60,33 +70,18 @@
                             <th>Universite</th>
                             <th>Nombre</th>
                             <th>Etat</th>
-                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                            @foreach (var data in StageUnivList)
-   {
+                        {
                         <tr>
-                         
                                 <td>#@data.IdStage</td>
                                 <td>@data.DateDebut </td>
                                 <td>@data.DateFin</td>
                                 <td>@data.NomUniversite</td>
                                 <td>@data.NombreEtudiants</td>
                                 <td>@data.EtatStage</td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <button type="button" class="btn btn-success btn-sm btn-icon-text mr-3">
-                                            Edit
-                                            <i class="typcn typcn-edit btn-icon-append"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-danger btn-sm btn-icon-text">
-                                            Delete
-                                            <i class="typcn typcn-delete-outline btn-icon-append"></i>
-                                        </button>
-                                    </div>
-                                </td>
-
                         </tr>
                          }
                     </tbody>
@@ -98,10 +93,14 @@
 
 @code{
     private List<UniversiteStageDto> StageUnivList = new List<UniversiteStageDto>();
-   
+
+
+
 
     protected override async Task OnInitializedAsync()
     {
         StageUnivList = await Service.GetUniversiteStageAsync();
+        dto = await CountService.GetCountsInEnCoursAsync();
+
     }
 }

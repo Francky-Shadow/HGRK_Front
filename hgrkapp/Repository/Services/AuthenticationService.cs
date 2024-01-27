@@ -38,19 +38,26 @@ namespace hgrkapp.Repository.Services
                 var response = await routes_const.Login
                      .PostJsonAsync(user)
                      .ReceiveJson<LoginResult>();
-                await _localStorage.SetItemAsync("authToken", response!.token);
-                ((ApiAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(user.Username!);
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", response.token);
+                if (response!=null)
+                {
+                    await _localStorage.SetItemAsync("authToken", response!.token);
+                    ((ApiAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(user.Username!);
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", response.token);
+                    return response;
+                }
 
-                return response;
+                LoginResult login = new LoginResult();
+                login.Successful = false;
+                return login;
 
-             
-               
+
             }
             catch (FlurlHttpException ex)
             {
                 // Gérer les erreurs, par exemple, retourner null ou une chaîne d'erreur.
-                return null;
+                LoginResult login = new LoginResult();
+                login.Successful = false;
+                return login;
             }
         }
         public async Task Logout()
@@ -59,6 +66,33 @@ namespace hgrkapp.Repository.Services
             
             ((ApiAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsLoggedOut();
             _httpClient.DefaultRequestHeaders.Authorization = null;
+        }
+
+        public async Task<RegisterResponse> Register(User user)
+        {
+            try
+            {
+
+                var response = await routes_const.Register
+                     .PostJsonAsync(user)
+                     .ReceiveJson<RegisterResponse>();
+
+                return response;
+            }
+            catch (FlurlHttpException ex)
+            {
+                // Handle the exception or log it
+                Console.WriteLine($"Error during POST request: {ex.Message}");
+
+                // Additional details
+                if (ex.Call.Response != null)
+                {
+                    Console.WriteLine($"Status Code: {ex.Call.Response.StatusCode}");
+                    //Console.WriteLine($"Response Content: {await ex.Call.Response.Content.ReadAsStringAsync()}");
+                }
+
+                throw; // Re-throw the exception
+            }
         }
     }
 }

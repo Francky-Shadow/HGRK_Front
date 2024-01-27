@@ -64,12 +64,12 @@
 @code {
     private List<universite> universites = new List<universite>();
     [Parameter]
-    public EventCallback<bool> OnChange { get; set; }
+    public EventCallback<bool> OnChangeUniversite { get; set; }
 
     private async Task OnButtonClicked()
     {
      
-        await OnChange.InvokeAsync(false);
+        await OnChangeUniversite.InvokeAsync(false);
     }
 
     protected override async Task OnInitializedAsync()

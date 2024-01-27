@@ -1,5 +1,8 @@
 ﻿@inject hgrkapp.DTO.stage stage
 @inject hgrkapp.Repository.IServices.IStageService ServiceStage
+@inject hgrkapp.Repository.IServices.IUniversiteServices UniversiteService
+@inject hgrkapp.DTO.universite universite
+
 <div class="col-12 grid-margin stretch-card">
     <div class="card">
         <div class="card-body">
@@ -9,25 +12,16 @@
             </p>
 
             <div class="form-group">
-                <label for="exampleInputName1">Code de l'université</label>
-                <input type="text" class="form-control" @bind="stage.IdUniversite" placeholder="Label">
+                <label for="exampleInputName1">Nom de l'université</label>
+                <select class="form-select"  @bind="stage.IdUniversite" >
+                            <option value="">Sélectionner</option>
+                    @foreach(var data in universites)
+                    {
+                         <option value="@data.Id">@data.Nom</option>
+                    }
+                </select>
+           
             </div>
-
-            <div class="form-group">
-                <label for="exampleInputName1">Date de début</label>
-                <input type="date" class="form-control" @bind="stage.DateDebut" placeholder="Code">
-            </div>
-
-            <div class="form-group">
-                <label for="exampleInputEmail3">Date de fin</label>
-                <input type="date" class="form-control" @bind="stage.DateFin">
-            </div>
-
-            <div class="form-group">
-                <label>Etat du stage</label>
-                <input type="text" class="form-control"  @bind="stage.EtatStage">
-            </div>
-
 
             <button type="submit" class="btn btn-primary mr-2" @onclick="OnPostData">Soumettre</button>
             <button class="btn btn-light">Cancel</button>
@@ -36,12 +30,18 @@
 </div>
 @code {
 
+    private List<hgrkapp.DTO.universite> universites = new List<hgrkapp.DTO.universite>();
     [Parameter]
     public EventCallback<bool> OnChange { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        universites = await UniversiteService.GetUniversite();
+    }
 
     private async void OnPostData()
     {
-
+        stage.EtatStage = "en cours";
+       
         var data = await ServiceStage.CreateStage(stage);
         await OnChange.InvokeAsync(true);
     }

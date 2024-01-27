@@ -6,6 +6,7 @@
             <h4 class="card-title">Enregistrement d'une université</h4>
             <p class="card-description">
                Formulaire université
+                 <ShowAlertComponentInForms Errors="validationErrors"/>
             </p>
   
                 <div class="form-group">
@@ -22,19 +23,27 @@
                      <input type="text" class="form-control" @bind="univ.Adresse" placeholder="Adresse">
                  </div>
              <button type="submit" class="btn btn-primary mr-2" @onclick="OnPostData">Soumettre</button>
-             <button class="btn btn-light">Cancel</button>
+             <button class="btn btn-light" @onclick="OnCancelClick">Annuler</button>
         </div>
     </div>
 </div>
 @code {
-
+    private List<string> validationErrors = new List<string>();
     [Parameter]
-    public EventCallback<bool> OnChange { get; set; }
+    public EventCallback<bool> OnChangeUniversite { get; set; }
 
     private async void OnPostData()
     {
-
-        var data = await Services.CreateUniversite(univ);
-        await OnChange.InvokeAsync(true);
+        validationErrors = univ.Validate();
+    if (validationErrors.Count == 0)
+            {
+               var data = await Services.CreateUniversite(univ);
+   await OnChangeUniversite.InvokeAsync(true);
+            }
+     
+    }
+    private async void OnCancelClick()
+    {
+        await OnChangeUniversite.InvokeAsync(true);
     }
 }
