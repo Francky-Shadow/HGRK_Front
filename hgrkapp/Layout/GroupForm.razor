@@ -41,16 +41,7 @@
              
             </div>
 
-             <div class="form-group">
-                  <label>Etat du stage</label>
-                  <select class="form-select" @bind="group.EtatStage">
-                      <option value="">--Sélectionner--</option>
-                      <option value="en cours">en cours</option>
-                      <option value="en attente">en attente</option>
-                      <option value="terminé">terminé</option>
-                  </select>
-
-              </div>
+            
 
             <button type="submit" class="btn btn-primary mr-2" @onclick="OnPostData">Soumettre</button>
             <button class="btn btn-light" @onclick="OnCancelData">Annuler</button>

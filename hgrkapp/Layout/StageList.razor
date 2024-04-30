@@ -1,6 +1,7 @@
 ﻿@using DTO
 @inject hgrkapp.DTO.stage stages
 @inject hgrkapp.Repository.IServices.IStageService Services
+@inject hgrkapp.Repository.IServices.IMixedServices ServiceMixed
 
 @if (stagelist != null)
 {
@@ -25,7 +26,7 @@
                                     DateFin
                                 </th>
                                 <th>
-                                    IdUniversite
+                                    Université
                                 </th>
                                 <th>
                                     EtatStage
@@ -34,11 +35,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var data in stagelist)
+                            @foreach (var data in StageUnivList)
                             {
                                 <tr>
                                     <td class="py-1">
-                                        @data.Id
+                                        @data.IdStage
                                     </td>
                                     <td>
                                         @data.DateDebut
@@ -47,7 +48,7 @@
                                         @data.DateFin
                                     </td>
                                     <td>
-                                        @data.IdUniversite
+                                        @data.NomUniversite
                                     </td>
                                     <td>
                                         @data.EtatStage
@@ -65,6 +66,7 @@
 
 @code {
     private List<stage> stagelist = new List<stage>();
+    private List<UniversiteStageDto> StageUnivList = new List<UniversiteStageDto>();
     [Parameter]
     public EventCallback<bool> OnChange { get; set; }
 
@@ -76,6 +78,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        stagelist = await Services.GetAllStage();
+        StageUnivList = await ServiceMixed.GetUniversiteStageAsync();
+        //stagelist = await Services.GetAllStage();
     }
 }
